@@ -204,4 +204,18 @@ cython_debug/
 # Marimo
 marimo/_static/
 marimo/_lsp/
-__marimo__/
+__marimo__
+
+# --- Project-specific: Heart Disease FastAPI ---
+
+# Ignore raw Kaggle data but keep the folder in Git
+data/*
+!data/.gitkeep
+
+# Keep trained model tracked (needed for simple Render deploy)
+# (Intentionally NOT ignoring model/*.joblib)
+
+# Runtime logs/PIDs
+logs/
+*.log
+*.pid
