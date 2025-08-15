@@ -1,16 +1,23 @@
-from pydantic import BaseModel, Field
+# app/schemas.py
 
+from pydantic import BaseModel
+
+# Input schema for /predict
 class HeartFeatures(BaseModel):
-    age: float = Field(..., ge=0)
-    sex: int = Field(..., ge=0, le=1)
-    cp: int = Field(..., ge=0, le=3)
-    trestbps: float = Field(..., ge=0)
-    chol: float = Field(..., ge=0)
-    fbs: int = Field(..., ge=0, le=1)
-    restecg: int = Field(..., ge=0, le=2)
-    thalach: float = Field(..., ge=0)
-    exang: int = Field(..., ge=0, le=1)
-    oldpeak: float = Field(..., ge=0)
-    slope: int = Field(..., ge=0, le=2)
-    ca: int = Field(..., ge=0, le=4)
-    thal: int = Field(..., ge=0, le=3)
+    age: float
+    sex: int
+    cp: int
+    trestbps: float
+    chol: float
+    fbs: int
+    restecg: int
+    thalach: float
+    exang: int
+    oldpeak: float
+    slope: int
+    ca: int
+    thal: int
+
+# Output schema for /predict
+class PredictionOutput(BaseModel):
+    heart_disease: bool
