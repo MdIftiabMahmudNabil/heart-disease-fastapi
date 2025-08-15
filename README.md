@@ -140,3 +140,102 @@ Once running, visit:
 | `slope`    | Slope of peak exercise ST segment          | 0–2                    |
 | `ca`       | Number of major vessels                    | 0–3                    |
 | `thal`     | Thalassemia                                | 1–3                    |
+
+
+## Docker Deployment
+
+### Build Docker Image
+```bash
+docker build -t heart-disease-fastapi .
+```
+### Run Docker Container
+```bash
+docker run -d -p 8000:8000 heart-disease-fastapi
+```
+### Using Docker Compose
+```bash
+docker-compose up -d
+```
+## Cloud Deployment
+
+This project uses a **Dockerfile** at the repo root and a pre-trained model committed to `model/heart_model.joblib`.
+
+### A. Push to GitHub
+```bash
+git add .
+git commit -m "Deploy-ready: Docker + model artifact"
+git branch -M main
+git remote add origin https://github.com/<your-username>/heart-disease-fastapi.git
+git push -u origin main
+```
+### B) Create a Web Service on Render
+
+1. Go to **Render → New → Web Service**  
+2. **Connect** your GitHub repository  
+3. **Environment/Language:** Docker *(auto-detected)*  
+4. **Branch:** `main`  
+5. **Root Directory:** *(leave blank — Dockerfile is at repo root)*  
+6. **Instance Type:** **Free** *(sufficient for this demo)*  
+7. **Environment Variables:** *none required*  
+8. Click **Create Web Service**
+
+
+### C) Post-create setting
+
+In **Render → Settings → Health Check Path**, set: /health
+
+### D) Verify & Test
+
+1. Watch **Logs** until you see:
+```bash
+Uvicorn running on http://0.0.0.0:<PORT>
+Application startup complete.
+```
+2. Open your live URL and test:
+
+- `/health` → liveness check  
+- `/info` → model info  
+- `/docs` → Swagger UI
+
+### Other Platforms
+The Docker container can be deployed to:
+- **Heroku**
+- **AWS ECS**
+- **Google Cloud Run**
+- **Azure Container Instances**
+
+## Model Information
+- **Algorithm:** Random Forest Classifier  
+- **Training Data:** Kaggle Heart Disease Dataset (`data/heart.csv`)  
+- **Features:** 13 medical indicators  
+- **Output:** Binary classification (`heart_disease: true/false`)  
+- **Model File:** `model/heart_model.joblib`
+## Development
+
+### Adding New Features
+1. Fork the repository  
+2. Create a feature branch  
+3. Make your changes  
+4. Add tests if applicable  
+5. Submit a pull request
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.  
+For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+- Kaggle Heart Disease Dataset  
+- FastAPI framework  
+- scikit-learn library
+
+## Contact
+**Author:** Md Iftiab Mahmud Nabil  
+**Repository:** [heart-disease-fastapi](https://github.com/MdIftiabMahmudNabil/heart-disease-fastapi)
+
+---
+
+> ⚠️ **Disclaimer:** This tool is for educational and research purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment.
+
