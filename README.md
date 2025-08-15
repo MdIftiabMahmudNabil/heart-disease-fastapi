@@ -1,131 +1,213 @@
-Heart Disease Prediction API
-A FastAPI-based service for predicting heart disease using machine learning, containerized with Docker, and deployable to Render. This project prioritizes Dockerization and deployment over maximum model accuracy.
-Features
+# Heart Disease Prediction API with FastAPI
 
-FastAPI Backend: Provides a RESTful API for heart disease prediction.
-Machine Learning: Uses a pre-trained model to predict heart disease risk based on clinical data.
-Dockerized: Containerized for consistent deployment across environments.
-Render Deployment: Easily deployable to Render for scalable hosting.
-Swagger UI: Interactive API documentation at /docs.
+A lightweight FastAPI service that predicts heart disease using a scikit-learn RandomForest trained on the Kaggle Heart Disease dataset (data/heart.csv). The saved model (model/heart_model.joblib) powers three endpoints: GET /health, GET /info, and POST /predict, returning heart_disease: true|false. Containerized with Docker and deployed on Render.
 
-Project Structure
-heart-disease-fastapi/
+## Features
+
+- **Machine Learning Model**: RandomForest classifier trained with scikit-learn
+- **Fast API Framework**: High-performance, easy-to-use web framework
+- **Three API Endpoints**:
+  - `GET /health`: Health check endpoint
+  - `GET /info`: Provides basic information about the API
+  - `POST /predict`: Heart disease prediction endpoint
+- **Docker Support**: Fully containerized for easy deployment
+- **Cloud Ready**: Deployable to Render and other cloud platforms
+
+## Project Structure
+
+.
 ├── app/
-│   ├── main.py            # FastAPI application entry point
-│   ├── schemas.py         # Pydantic models for request validation
-│   └── model/
-│       └── heart_model.joblib  # Pre-trained ML model
-├── Dockerfile             # Docker build instructions
-├── requirements.txt       # Python dependencies
-├── README.md              # Project documentation
-└── .gitignore             # Git ignore file
+│   ├── main.py            # FastAPI app (endpoints)
+│   └── schemas.py         # Pydantic input/output models
+├── model/
+│   └── train_model.py     # Trains RandomForest, saves heart_model.joblib
+├── data/
+│   └── heart.csv          # Kaggle dataset (you provide this locally)
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── .dockerignore
+├── .gitignore
+└── README.md
 
-Prerequisites
 
-Python 3.10+
-Docker (for containerization)
-pip (Python package installer)
-Render account (for deployment)
+## Installation
 
-Installation
+### Prerequisites
+- Python 3.8+
+- pip
 
-Clone the Repository:
+### Local Setup
+
+1. **Clone the repository**:
+
 git clone https://github.com/MdIftiabMahmudNabil/heart-disease-fastapi.git
 cd heart-disease-fastapi
 
-
-Create and Activate a Virtual Environment:
-# Windows
+2. **Create virtual environment** (recommended):
 python -m venv venv
-.\venv\Scripts\activate
+source venv/bin/activate # On Windows: venv\Scripts\activate
 
-# Linux/Mac
-python3 -m venv venv
-source venv/bin/activate
-
-
-Install Dependencies:
+3. **Install dependencies**:
 pip install -r requirements.txt
 
+## Usage
+
+### Running Locally
+
+Start the FastAPI server:
+
+uvicorn main:app --reload
+
+The API will be available at `http://127.0.0.1:8000`
+
+### API Documentation
+
+Once running, visit:
+- **Interactive API docs**: `http://127.0.0.1:8000/docs`
+- **Alternative docs**: `http://127.0.0.1:8000/redoc`
+
+## API Endpoints
+
+### 1. Health Check
+GET /health
+
+**Response**:
+{
+"status": "healthy"
+}
+
+### 2. API Information
+GET /info
+
+**Response**:
+{
+"name": "Heart Disease Prediction API",
+"version": "1.0.0",
+"model": "RandomForest",
+"description": "Predicts heart disease based on medical indicators"
+}
 
 
-Running Locally
+### 3. Heart Disease Prediction
+POST /predict
 
-Start the FastAPI Server:
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+**Request Body**:
+{
+"age": 63,
+"sex": 1,
+"cp": 3,
+"trestbps": 145,
+"chol": 233,
+"fbs": 1,
+"restecg": 0,
+"thalach": 150,
+"exang": 0,
+"oldpeak": 2.3,
+"slope": 0,
+"ca": 0,
+"thal": 1
+}
 
+**Response**:
 
-Access the Application:
+{
+"heart_disease": true
+}
 
-Web Interface: http://localhost:8000
-API Documentation: http://localhost:8000/docs
+### Feature Descriptions
 
+| Feature | Description | Values |
+|---------|-------------|---------|
+| `age` | Age in years | Integer |
+| `sex` | Gender | 1 = male, 0 = female |
+| `cp` | Chest pain type | 0-3 |
+| `trestbps` | Resting blood pressure | mm Hg |
+| `chol` | Serum cholesterol | mg/dl |
+| `fbs` | Fasting blood sugar > 120 mg/dl | 1 = true, 0 = false |
+| `restecg` | Resting ECG results | 0-2 |
+| `thalach` | Maximum heart rate achieved | Integer |
+| `exang` | Exercise induced angina | 1 = yes, 0 = no |
+| `oldpeak` | ST depression | Float |
+| `slope` | Slope of peak exercise ST segment | 0-2 |
+| `ca` | Number of major vessels | 0-3 |
+| `thal` | Thalassemia | 1-3 |
 
+## Docker Deployment
 
-Running with Docker
-
-Build the Docker Image:
+### Build Docker Image
 docker build -t heart-disease-fastapi .
 
+### Run Docker Container
+docker run -d -p 8000:8000 heart-disease-fastapi
 
-Run the Docker Container:
-docker run -p 8000:8000 heart-disease-fastapi
-
-
-Access the Application:
-
-Web Interface: http://localhost:8000
-API Documentation: http://localhost:8000/docs
+### Using Docker Compose (if available)
+docker-compose up -d
 
 
+## Cloud Deployment
 
-Deploying to Render
+This application is configured for deployment on cloud platforms:
 
-Push the repository to GitHub.
-Create a new Web Service on Render.
-Select Docker as the environment.
-Connect your GitHub repository (MdIftiabMahmudNabil/heart-disease-fastapi).
-Deploy and test the live API at the provided Render URL (/docs for Swagger UI).
+### Render Deployment
+1. Connect your GitHub repository to Render
+2. Choose "Web Service"
+3. Set build command: `pip install -r requirements.txt`
+4. Set start command: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 
-API Endpoints
+### Other Platforms
+The Docker container can be deployed to:
+- Heroku
+- AWS ECS
+- Google Cloud Run
+- Azure Container Instances
 
-GET /health: Check the API's health status.
-POST /predict: Submit clinical data for heart disease prediction.
-Request Body: JSON with features (e.g., age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal).
-Response: Prediction result (0 = no heart disease, 1 = heart disease).
+## Model Information
+
+- **Algorithm**: Random Forest Classifier
+- **Training Data**: Kaggle Heart Disease Dataset
+- **Features**: 13 medical indicators
+- **Output**: Binary classification (heart disease: true/false)
+- **Model File**: `model/heart_model.joblib`
+
+## Development
+
+### Adding New Features
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+### Testing
+
+Install test dependencies
+pip install pytest httpx
+
+Run tests
+pytest
 
 
+## Contributing
 
-Dataset
-The model is trained on the Kaggle Heart Disease Dataset, focusing on binary classification (0 = no heart disease, 1 = heart disease).
-Notes
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-Ensure the heart_model.joblib file is present in the app/model/ directory.
-Clinical data inputs should use standard units.
-The project focuses on Dockerization and deployment, not optimizing model accuracy.
+## License
 
-Troubleshooting
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Application Won't Start:
-Verify Python version (3.10+).
-Ensure all dependencies are installed (pip install -r requirements.txt).
-Check for the presence of heart_model.joblib.
+## Acknowledgments
 
+- Kaggle Heart Disease Dataset
+- FastAPI framework
+- scikit-learn library
 
-Prediction Errors:
-Validate input data ranges and formats.
-Ensure all required features are provided in the /predict request.
+## Contact
 
+**Author**: Md Iftiab Mahmud Nabil  
+**Repository**: [heart-disease-fastapi](https://github.com/MdIftiabMahmudNabil/heart-disease-fastapi)
 
+---
 
-Contributing
-Contributions are welcome! Please:
+⚠️ **Disclaimer**: This tool is for educational and research purposes only. It should not be used as a substitute for professional medical advice, diagnosis, or treatment.
 
-Fork the repository.
-Create a new branch (git checkout -b feature-branch).
-Commit your changes (git commit -m "Add feature").
-Push to the branch (git push origin feature-branch).
-Open a pull request.
-
-License
-This project is licensed under the MIT License.
