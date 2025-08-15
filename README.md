@@ -15,22 +15,21 @@ A lightweight FastAPI service that predicts heart disease using a scikit-learn R
 
 ## 📁 Project Structure
 
+```text
 heart-disease-fastapi/
 ├── app/
-│   ├── main.py           # FastAPI app (endpoints)
-│   └── schemas.py        # Pydantic input/output models
+│   ├── main.py              # FastAPI app (endpoints)
+│   └── schemas.py           # Pydantic input/output models
 ├── model/
-│   └── train_model.py    # Trains RandomForest, saves heart_model.joblib
+│   └── train_model.py       # Trains RandomForest, saves heart_model.joblib
 ├── data/
-│   └── heart.csv         # Kaggle dataset
-├── Dockerfile            # Docker configuration
-├── docker-compose.yml    # Docker Compose configuration
-├── requirements.txt      # Python dependencies
-├── .gitignore            # Git ignore rules
-└── README.md             # Project documentation
-
-##
-
+│   └── heart.csv            # Kaggle dataset (you provide this locally)
+├── Dockerfile               # Docker configuration
+├── docker-compose.yml       # Docker Compose configuration
+├── requirements.txt         # Python dependencies
+├── .gitignore               # Git ignore rules
+└── README.md                # Project documentation
+```
 ## Installation
 
 ### Prerequisites
