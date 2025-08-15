@@ -32,10 +32,6 @@ heart-disease-fastapi/
 ```
 ## Installation
 
-### Prerequisites
-- Python **3.8+**
-- `pip`
-
 ### Local Setup
 
 1. **Clone the repository**
@@ -59,3 +55,88 @@ python -m venv venv
 ```bash
 pip install -r requirements.txt
 ```
+## Usage
+
+### Running Locally
+Start the FastAPI server:
+```bash
+uvicorn main:app --reload
+```
+The API will be available at http://127.0.0.1:8000.
+
+### API Documentation
+
+Once running, visit:
+
+- **Interactive API docs (Swagger UI):** http://127.0.0.1:8000/docs
+- **Alternative docs (ReDoc):** http://127.0.0.1:8000/redoc
+
+## API Endpoints
+
+### 1. Health Check
+**GET** `/health`
+
+**Response**
+```json
+{
+  "status": "healthy"
+}
+```
+
+### 2. API Information
+**GET** `/info`
+
+**Response**
+```json
+{
+  "name": "Heart Disease Prediction API",
+  "version": "1.0.0",
+  "model": "RandomForest",
+  "description": "Predicts heart disease based on medical indicators"
+}
+```
+
+### 3. Heart Disease Prediction
+**POST** `/predict`
+
+**Request Body**
+```json
+{
+  "age": 63,
+  "sex": 1,
+  "cp": 3,
+  "trestbps": 145,
+  "chol": 233,
+  "fbs": 1,
+  "restecg": 0,
+  "thalach": 150,
+  "exang": 0,
+  "oldpeak": 2.3,
+  "slope": 0,
+  "ca": 0,
+  "thal": 1
+}
+```
+**Response**
+```json
+{
+  "heart_disease": true
+}
+```
+### Feature Descriptions
+
+| Feature    | Description                               | Values                 |
+|------------|-------------------------------------------|------------------------|
+| `age`      | Age in years                               | Integer                |
+| `sex`      | Gender                                     | 1 = male, 0 = female   |
+| `cp`       | Chest pain type                            | 0–3                    |
+| `trestbps` | Resting blood pressure                     | mm Hg                  |
+| `chol`     | Serum cholesterol                          | mg/dl                  |
+| `fbs`      | Fasting blood sugar > 120 mg/dl            | 1 = true, 0 = false    |
+| `restecg`  | Resting ECG results                        | 0–2                    |
+| `thalach`  | Maximum heart rate achieved                | Integer                |
+| `exang`    | Exercise induced angina                    | 1 = yes, 0 = no        |
+| `oldpeak`  | ST depression                              | Float                  |
+| `slope`    | Slope of peak exercise ST segment          | 0–2                    |
+| `ca`       | Number of major vessels                    | 0–3                    |
+| `thal`     | Thalassemia                                | 1–3                    |
