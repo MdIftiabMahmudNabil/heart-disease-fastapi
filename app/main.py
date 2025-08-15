@@ -1,53 +1,46 @@
-import os
+# app/main.py
+
+from fastapi import FastAPI
+from app.schemas import HeartFeatures
 import joblib
 import numpy as np
-from fastapi import FastAPI, HTTPException
-from app.schemas import HeartFeatures
 
-MODEL_PATH = os.getenv("MODEL_PATH", "model/heart_model.joblib")
+# Load the heart model
+model = joblib.load("model/heart_model.joblib")
 
-app = FastAPI(title="Heart Disease Prediction API", version="1.0.0")
-
-_model = None
-_model_info = {"model_type": "unknown", "features": []}
-
-def _load_model():
-    global _model, _model_info
-    if _model is None:
-        if not os.path.exists(MODEL_PATH):
-            raise FileNotFoundError(f"Model not found at: {MODEL_PATH}. Please train first.")
-        _model = joblib.load(MODEL_PATH)
-        _model_info["model_type"] = type(_model).__name__
-        try:
-            _model_info["features"] = _model.feature_names_in_.tolist()
-        except Exception:
-            pass
-    return _model
+# Create FastAPI app
+app = FastAPI(
+    title="Heart Disease Prediction API",
+    description="API for predicting heart disease presence using FastAPI",
+    version="1.0"
+)
 
 @app.get("/health")
-def health():
-    return {"status": "ok"}
+def health_check():
+    """Health check endpoint"""
+    return {"status": "API is running"}
 
 @app.get("/info")
-def info():
+def model_info():
+    """Basic model info"""
+    # Best effort to expose features if available
     try:
-        _ = _load_model()
-        return {"model_path": MODEL_PATH, **_model_info}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        features = model.feature_names_in_.tolist()
+    except Exception:
+        features = ["age","sex","cp","trestbps","chol","fbs","restecg",
+                    "thalach","exang","oldpeak","slope","ca","thal"]
+    return {
+        "model_type": type(model).__name__,
+        "features": features
+    }
 
 @app.post("/predict")
-def predict(payload: HeartFeatures):
-    try:
-        model = _load_model()
-        x = np.array([[
-            payload.age, payload.sex, payload.cp, payload.trestbps, payload.chol,
-            payload.fbs, payload.restecg, payload.thalach, payload.exang,
-            payload.oldpeak, payload.slope, payload.ca, payload.thal
-        ]], dtype=float)
-        pred = model.predict(x)[0]
-        return {"heart_disease": bool(int(pred) == 1)}
-    except FileNotFoundError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Prediction failed: {e}")
+def predict_species(data: HeartFeatures):
+    """Make prediction from input features"""
+    features = np.array([[
+        data.age, data.sex, data.cp, data.trestbps, data.chol,
+        data.fbs, data.restecg, data.thalach, data.exang,
+        data.oldpeak, data.slope, data.ca, data.thal
+    ]])
+    prediction = int(model.predict(features)[0])
+    return {"heart_disease": bool(prediction == 1)}
