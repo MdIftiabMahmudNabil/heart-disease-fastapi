@@ -13,7 +13,7 @@ A lightweight FastAPI service that predicts heart disease using a scikit-learn R
 - **Docker Support**: Fully containerized for easy deployment
 - **Cloud Ready**: Deployable to Render and other cloud platforms
 
-# 📁 Project Structure
+## 📁 Project Structure
 
 heart-disease-fastapi/
 ├── app/
@@ -29,7 +29,7 @@ heart-disease-fastapi/
 ├── .gitignore            # Git ignore rules
 └── README.md             # Project documentation
 
-
+##
 
 ## Installation
 
