@@ -15,7 +15,7 @@ A lightweight FastAPI service that predicts heart disease using a scikit-learn R
 
 ## Project Structure
 
-.
+heart-disease-fastapi/
 ├── app/
 │   ├── main.py            # FastAPI app (endpoints)
 │   └── schemas.py         # Pydantic input/output models
