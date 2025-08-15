@@ -15,6 +15,15 @@ app = FastAPI(
     version="1.0"
 )
 
+@app.get("/")
+def root():
+    return {
+        "message": "Heart Disease Prediction API is running.",
+        "docs": "/docs",
+        "health": "/health",
+        "info": "/info"
+    }
+
 @app.get("/health")
 def health_check():
     """Health check endpoint"""
